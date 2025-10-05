@@ -12,8 +12,8 @@ NC='\033[0m' # No Color
 # Banner
 echo -e "${CYAN}"
 echo "╔══════════════════════════════════════════════╗"
-echo "║           PAKISTAN DIGITAL VALIDATOR        ║"
-echo "║                516 Hackers                  ║"
+echo "║           PAKISTAN DIGITAL VALIDATOR         ║"
+echo "║                516 Hackers                   ║"
 echo "╚══════════════════════════════════════════════╝"
 echo -e "${NC}"
 
