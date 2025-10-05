@@ -1,15 +1,12 @@
 from setuptools import setup, find_packages
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
-
 setup(
     name="pakistan-digital-validator",
     version="1.0.0",
     author="516 Hackers",
     author_email="your-email@example.com",
     description="Ethical toolkit for Pakistani CNIC and phone number validation",
-    long_description=long_description,
+    long_description="A comprehensive, ethical toolkit for Pakistani CNIC and phone number validation",
     long_description_content_type="text/markdown",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
@@ -31,7 +28,7 @@ setup(
     install_requires=[
         "phonenumbers>=8.12.0",
         "pytesseract>=0.3.8",
-        "opencv-python>=4.5.0",
+        "opencv-python>=4.5.0", 
         "Pillow>=8.3.0",
         "numpy>=1.21.0",
     ],
