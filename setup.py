@@ -11,7 +11,7 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     package_data={
-        "pak_validator": ["data/*.json"],
+        "pakistan_validator": ["data/*.json"],
     },
     classifiers=[
         "Development Status :: 4 - Beta",
