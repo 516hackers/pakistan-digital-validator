@@ -17,37 +17,14 @@ echo "║                516 Hackers                  ║"
 echo "╚══════════════════════════════════════════════╝"
 echo -e "${NC}"
 
-# Function to check if Python and required packages are installed
-check_dependencies() {
-    if ! command -v python3 &> /dev/null; then
-        echo -e "${RED}Error: Python3 is not installed${NC}"
-        exit 1
-    fi
-
-    # Check if package is installed
-    python3 -c "import phonenumbers" 2>/dev/null
-    if [ $? -ne 0 ]; then
-        echo -e "${YELLOW}Installing required packages...${NC}"
-        pip3 install phonenumbers
-    fi
-}
-
 # Function for CNIC analysis
 cnic_analysis() {
     echo -e "\n${CYAN}=== CNIC ANALYSIS TOOL ===${NC}"
     echo -e "${YELLOW}Enter CNIC number (format: XXXXX-XXXXXXX-X):${NC}"
     read -p "CNIC: " cnic_input
     
-    if [ -z "$cnic_input" ]; then
-        echo -e "${RED}No CNIC entered!${NC}"
-        return
-    fi
-    
     python3 -c "
-import sys
-sys.path.append('src')
 from pak_validator import CNICValidator
-
 v = CNICValidator()
 result = v.validate_comprehensive('$cnic_input')
 
@@ -78,16 +55,8 @@ phone_analysis() {
     echo -e "${YELLOW}Enter Phone Number:${NC}"
     read -p "Phone: " phone_input
     
-    if [ -z "$phone_input" ]; then
-        echo -e "${RED}No phone number entered!${NC}"
-        return
-    fi
-    
     python3 -c "
-import sys
-sys.path.append('src')
 from pak_validator import PhoneValidator
-
 v = PhoneValidator()
 result = v.get_basic_info('$phone_input')
 
@@ -128,20 +97,15 @@ batch_analysis() {
             echo -e "${BLUE}Example: 35201-1234567-8, 41234-5678901-2, 12345${NC}"
             read -p "CNICs: " cnic_list
             
-            IFS=',' read -ra cnics <<< "$cnic_list"
-            
             python3 -c "
-import sys
-sys.path.append('src')
 from pak_validator import CNICValidator
-
 v = CNICValidator()
 print('')
 print('┌' + '─' * 50 + '┐')
 print('│' + 'BATCH CNIC ANALYSIS RESULTS'.center(50) + '│')
 print('├' + '─' * 50 + '┤')
 
-cnics_list = '''$cnic_list'''.split(',')
+cnics_list = '$cnic_list'.split(',')
 for i, cnic in enumerate(cnics_list, 1):
     cnic = cnic.strip()
     if cnic:
@@ -160,17 +124,14 @@ print('└' + '─' * 50 + '┘')
             read -p "Phones: " phone_list
             
             python3 -c "
-import sys
-sys.path.append('src')
 from pak_validator import PhoneValidator
-
 v = PhoneValidator()
 print('')
 print('┌' + '─' * 60 + '┐')
 print('│' + 'BATCH PHONE ANALYSIS RESULTS'.center(60) + '│')
 print('├' + '─' * 60 + '┤')
 
-phones_list = '''$phone_list'''.split(',')
+phones_list = '$phone_list'.split(',')
 for i, phone in enumerate(phones_list, 1):
     phone = phone.strip()
     if phone:
@@ -194,8 +155,6 @@ synthetic_data() {
     echo -e "\n${CYAN}=== SYNTHETIC TEST DATA GENERATOR ===${NC}"
     
     python3 -c "
-import sys
-sys.path.append('src')
 from pak_validator import SyntheticCNICGenerator, CNICValidator
 
 gen = SyntheticCNICGenerator()
@@ -270,3 +229,6 @@ main_menu() {
         echo -e "${NC}"
     done
 }
+
+# Start the main menu
+main_menu
