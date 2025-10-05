@@ -23,7 +23,11 @@ cnic_analysis() {
     echo -e "${YELLOW}Enter CNIC number (format: XXXXX-XXXXXXX-X):${NC}"
     read -p "CNIC: " cnic_input
     
-    python3 -c "
+    python3 << EOF
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
 from pak_validator import CNICValidator
 v = CNICValidator()
 result = v.validate_comprehensive('$cnic_input')
@@ -35,18 +39,18 @@ print('└' + '─' * 40 + '┘')
 
 if result['is_valid']:
     print('✅ Status: VALID')
-    print(f'📝 Input: {result[\"input\"]}')
-    print(f'🔢 Cleaned: {result[\"cleaned\"]}')
-    print(f'📋 Formatted: {result[\"formatted\"]}')
-    print(f'🏛️  Region: {result[\"region\"]}')
-    print(f'👤 Gender: {result[\"gender\"]}')
+    print(f'📝 Input: {result["input"]}')
+    print(f'🔢 Cleaned: {result["cleaned"]}')
+    print(f'📋 Formatted: {result["formatted"]}')
+    print(f'🏛️  Region: {result["region"]}')
+    print(f'👤 Gender: {result["gender"]}')
 else:
     print('❌ Status: INVALID')
-    print(f'📝 Input: {result[\"input\"]}')
+    print(f'📝 Input: {result["input"]}')
     print('💡 Errors:')
     for error in result['errors']:
         print(f'   • {error}')
-"
+EOF
 }
 
 # Function for Phone Number analysis
@@ -55,7 +59,11 @@ phone_analysis() {
     echo -e "${YELLOW}Enter Phone Number:${NC}"
     read -p "Phone: " phone_input
     
-    python3 -c "
+    python3 << EOF
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
 from pak_validator import PhoneValidator
 v = PhoneValidator()
 result = v.get_basic_info('$phone_input')
@@ -67,20 +75,20 @@ print('└' + '─' * 40 + '┘')
 
 if result['is_valid']:
     print('✅ Status: VALID PAKISTANI NUMBER')
-    print(f'📝 Input: {result[\"input\"]}')
-    print(f'📞 Formatted: {result[\"formatted\"]}')
-    print(f'📱 Carrier Type: {result[\"carrier_type\"]}')
+    print(f'📝 Input: {result["input"]}')
+    print(f'📞 Formatted: {result["formatted"]}')
+    print(f'📱 Carrier Type: {result["carrier_type"]}')
     if result.get('area'):
-        print(f'📍 Area: {result[\"area\"]}')
+        print(f'📍 Area: {result["area"]}')
     if result.get('area_code'):
-        print(f'🔢 Area Code: {result[\"area_code\"]}')
+        print(f'🔢 Area Code: {result["area_code"]}')
 else:
     print('❌ Status: INVALID')
-    print(f'📝 Input: {result[\"input\"]}')
+    print(f'📝 Input: {result["input"]}')
     print('💡 Errors:')
     for error in result['errors']:
         print(f'   • {error}')
-"
+EOF
 }
 
 # Function for batch analysis
@@ -97,7 +105,11 @@ batch_analysis() {
             echo -e "${BLUE}Example: 35201-1234567-8, 41234-5678901-2, 12345${NC}"
             read -p "CNICs: " cnic_list
             
-            python3 -c "
+            python3 << EOF
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
 from pak_validator import CNICValidator
 v = CNICValidator()
 print('')
@@ -116,14 +128,18 @@ for i, cnic in enumerate(cnics_list, 1):
         print(f'│ {i:2d}. {cnic:20} {status:12} {region:15} {gender:6} │')
 
 print('└' + '─' * 50 + '┘')
-"
+EOF
             ;;
         2)
             echo -e "\n${YELLOW}Enter Phone Numbers separated by commas:${NC}"
             echo -e "${BLUE}Example: +923001234567, 03001234567, 0211234567${NC}"
             read -p "Phones: " phone_list
             
-            python3 -c "
+            python3 << EOF
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
 from pak_validator import PhoneValidator
 v = PhoneValidator()
 print('')
@@ -142,7 +158,7 @@ for i, phone in enumerate(phones_list, 1):
         print(f'│ {i:2d}. {phone:15} {status:12} {carrier:8} {area:15} │')
 
 print('└' + '─' * 60 + '┘')
-"
+EOF
             ;;
         *)
             echo -e "${RED}Invalid choice!${NC}"
@@ -154,7 +170,11 @@ print('└' + '─' * 60 + '┘')
 synthetic_data() {
     echo -e "\n${CYAN}=== SYNTHETIC TEST DATA GENERATOR ===${NC}"
     
-    python3 -c "
+    python3 << EOF
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
 from pak_validator import SyntheticCNICGenerator, CNICValidator
 
 gen = SyntheticCNICGenerator()
@@ -187,7 +207,7 @@ for code, region in regions.items():
 
 print('└' + '─' * 50 + '┘')
 print('⚠️  These are SYNTHETIC numbers for testing only!')
-"
+EOF
 }
 
 # Main menu
