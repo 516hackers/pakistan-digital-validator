@@ -24,7 +24,7 @@ cnic_analysis() {
     read -p "CNIC: " cnic_input
     
     python3 -c "
-from pak_validator import CNICValidator
+from pakistan_validator import CNICValidator
 v = CNICValidator()
 result = v.validate_comprehensive('$cnic_input')
 
@@ -56,7 +56,7 @@ phone_analysis() {
     read -p "Phone: " phone_input
     
     python3 -c "
-from pak_validator import PhoneValidator
+from pakistan_validator import PhoneValidator
 v = PhoneValidator()
 result = v.get_basic_info('$phone_input')
 
@@ -98,7 +98,7 @@ batch_analysis() {
             read -p "CNICs: " cnic_list
             
             python3 -c "
-from pak_validator import CNICValidator
+from pakistan_validator import CNICValidator
 v = CNICValidator()
 print('')
 print('┌' + '─' * 50 + '┐')
@@ -124,7 +124,7 @@ print('└' + '─' * 50 + '┘')
             read -p "Phones: " phone_list
             
             python3 -c "
-from pak_validator import PhoneValidator
+from pakistan_validator import PhoneValidator
 v = PhoneValidator()
 print('')
 print('┌' + '─' * 60 + '┐')
@@ -155,7 +155,7 @@ synthetic_data() {
     echo -e "\n${CYAN}=== SYNTHETIC TEST DATA GENERATOR ===${NC}"
     
     python3 -c "
-from pak_validator import SyntheticCNICGenerator, CNICValidator
+from pakistan_validator import SyntheticCNICGenerator, CNICValidator
 
 gen = SyntheticCNICGenerator()
 val = CNICValidator()
