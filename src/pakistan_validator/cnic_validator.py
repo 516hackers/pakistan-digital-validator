@@ -1,14 +1,14 @@
 import json
 import os
 import re
-from typing import Dict, Optional, Tuple, List
+from typing import Dict, Optional, List
 from datetime import datetime
 from math import log2
 
 class CNICValidator:
     """
-    Advanced CNIC Validator for Pakistani National Identity Cards
-    Provides syntactic validation and advanced analysis
+    Advanced CNIC Validator with Deep Temporal Analysis
+    Provides comprehensive validation and time-based insights
     """
     
     def __init__(self):
@@ -17,6 +17,10 @@ class CNICValidator:
         self.exact_district_mapping = self._load_exact_district_mapping()
         self.cnic_pattern = re.compile(r'^\d{5}-\d{7}-\d{1}$')
         self.digits_pattern = re.compile(r'^\d{13}$')
+        
+        # Temporal analysis data
+        self.issue_year_ranges = self._load_issue_year_ranges()
+        self.generation_patterns = self._load_generation_patterns()
     
     def _load_region_codes(self) -> Dict[str, str]:
         """Load region codes from JSON file"""
@@ -73,53 +77,75 @@ class CNICValidator:
                 "37101": "Rawalpindi"
             }
     
+    def _load_issue_year_ranges(self) -> Dict[str, Dict]:
+        """Load CNIC series to issue year mapping"""
+        return {
+            "31100": {"start_year": 1990, "end_year": 1995, "era": "Early 90s"},
+            "31200": {"start_year": 1995, "end_year": 2000, "era": "Late 90s"},
+            "31300": {"start_year": 2000, "end_year": 2005, "era": "Early 2000s"},
+            "31400": {"start_year": 2005, "end_year": 2010, "era": "Late 2000s"},
+            "31500": {"start_year": 2010, "end_year": 2015, "era": "Early 2010s"},
+            "31600": {"start_year": 2015, "end_year": 2020, "era": "Late 2010s"},
+            "31700": {"start_year": 2020, "end_year": 2025, "era": "2020s"},
+            "35100": {"start_year": 1992, "end_year": 1998, "era": "Mid 90s"},
+            "37100": {"start_year": 1993, "end_year": 1999, "era": "Mid-Late 90s"},
+            "33100": {"start_year": 1994, "end_year": 2000, "era": "Late 90s"},
+        }
+    
+    def _load_generation_patterns(self) -> Dict[str, Dict]:
+        """Load generation analysis patterns"""
+        return {
+            "pre_2000": {
+                "description": "Pre-2000 Generation",
+                "years": [1990, 1999],
+                "characteristics": ["Low digit entropy", "Sequential patterns", "Regional concentration"]
+            },
+            "2000_2010": {
+                "description": "2000s Generation", 
+                "years": [2000, 2010],
+                "characteristics": ["Medium digit entropy", "Mixed patterns", "Urban expansion"]
+            },
+            "post_2010": {
+                "description": "Post-2010 Generation",
+                "years": [2011, 2025],
+                "characteristics": ["High digit entropy", "Random patterns", "National distribution"]
+            }
+        }
+    
     def validate_format(self, cnic: str) -> bool:
-        """
-        Validate CNIC format: XXXXX-XXXXXXX-X
-        Returns True if format is valid
-        """
+        """Validate CNIC format: XXXXX-XXXXXXX-X"""
         if not cnic or not isinstance(cnic, str):
             return False
         
-        # Check formatted pattern
         if self.cnic_pattern.match(cnic):
             return True
         
-        # Check digits-only pattern
         if self.digits_pattern.match(cnic):
             return True
             
         return False
     
     def clean_cnic(self, cnic: str) -> str:
-        """
-        Clean and standardize CNIC format
-        Returns digits-only format
-        """
+        """Clean and standardize CNIC format"""
         if not cnic:
             return ""
         
-        # Remove all non-digit characters
         cleaned = re.sub(r'\D', '', cnic)
         
-        # Ensure exactly 13 digits
         if len(cleaned) == 13:
             return cleaned
         return ""
     
     def parse_cnic(self, cnic: str) -> Optional[Dict[str, str]]:
-        """
-        Parse CNIC and extract information
-        Returns dictionary with parsed data or None if invalid
-        """
+        """Parse CNIC and extract information"""
         cleaned = self.clean_cnic(cnic)
         if not cleaned or len(cleaned) != 13:
             return None
         
         region_code = cleaned[0]
-        division_code = cleaned[1:3]  # First 2 digits after region code
-        district_code = cleaned[3:5]  # Next 2 digits for district
-        full_5_digit_code = cleaned[:5]  # Full 5-digit code for exact mapping (like "31304")
+        division_code = cleaned[1:3]
+        district_code = cleaned[3:5]
+        full_5_digit_code = cleaned[:5]
         gender_digit = int(cleaned[12])
         
         return {
@@ -133,7 +159,7 @@ class CNICValidator:
             'district': self._get_exact_district_name(full_5_digit_code),
             'gender': "Male" if gender_digit % 2 == 1 else "Female",
             'gender_digit': gender_digit,
-            'unique_number': cleaned[5:12]  # Remaining unique digits
+            'unique_number': cleaned[5:12]
         }
     
     def _get_division_name(self, division_code: str) -> str:
@@ -145,9 +171,7 @@ class CNICValidator:
         return self.exact_district_mapping.get(full_5_digit_code, f"District Code: {full_5_digit_code[3:5]}")
     
     def validate_comprehensive(self, cnic: str) -> Dict:
-        """
-        Comprehensive validation with detailed results
-        """
+        """Comprehensive validation with detailed results"""
         result = {
             'is_valid': False,
             'input': cnic,
@@ -175,7 +199,6 @@ class CNICValidator:
             result['errors'].append("Failed to parse CNIC")
             return result
         
-        # Advanced analysis
         advanced = self._advanced_analysis(cleaned)
         
         result.update({
@@ -193,16 +216,316 @@ class CNICValidator:
         return result
     
     def _advanced_analysis(self, cnic: str) -> Dict:
-        """
-        Perform advanced analysis on CNIC
-        """
-        analysis = {
+        """Perform advanced analysis on CNIC"""
+        return {
             'digit_analysis': self._analyze_digits(cnic),
             'pattern_analysis': self._analyze_patterns(cnic),
             'security_analysis': self._security_checks(cnic),
-            'statistical_analysis': self._statistical_analysis(cnic)
+            'statistical_analysis': self._statistical_analysis(cnic),
+            'temporal_analysis': self._temporal_analysis(cnic)
         }
-        return analysis
+    
+    def _temporal_analysis(self, cnic: str) -> Dict:
+        """Perform deep temporal analysis on CNIC"""
+        return {
+            'age_estimation': self._estimate_age(cnic),
+            'issue_date_prediction': self._predict_issue_date(cnic),
+            'generation_analysis': self._analyze_generation(cnic),
+            'series_analysis': self._analyze_series(cnic),
+            'temporal_patterns': self._detect_temporal_patterns(cnic)
+        }
+    
+    def _estimate_age(self, cnic: str) -> Dict:
+        """Estimate age based on CNIC series and patterns"""
+        first_five = cnic[:5]
+        current_year = datetime.now().year
+        
+        issue_info = self._get_issue_year_info(first_five)
+        estimated_issue_year = issue_info.get('estimated_year', 2000)
+        
+        min_age = current_year - issue_info.get('end_year', 2000)
+        max_age = current_year - issue_info.get('start_year', 1990)
+        likely_age = current_year - estimated_issue_year
+        
+        if likely_age < 18:
+            age_group = "Under 18"
+        elif likely_age < 25:
+            age_group = "Young Adult (18-24)"
+        elif likely_age < 35:
+            age_group = "Adult (25-34)" 
+        elif likely_age < 50:
+            age_group = "Middle Age (35-49)"
+        else:
+            age_group = "Senior (50+)"
+        
+        return {
+            'estimated_issue_year': estimated_issue_year,
+            'current_year': current_year,
+            'estimated_age': likely_age,
+            'age_range': f"{min_age}-{max_age} years",
+            'age_group': age_group,
+            'confidence': self._calculate_age_confidence(first_five),
+            'era': issue_info.get('era', 'Unknown')
+        }
+    
+    def _get_issue_year_info(self, first_five: str) -> Dict:
+        """Get issue year information based on CNIC series"""
+        series_key = first_five[:4] + "0"
+        if series_key in self.issue_year_ranges:
+            info = self.issue_year_ranges[series_key]
+            estimated_year = (info['start_year'] + info['end_year']) // 2
+            return {
+                'start_year': info['start_year'],
+                'end_year': info['end_year'],
+                'estimated_year': estimated_year,
+                'era': info['era']
+            }
+        
+        region_code = first_five[0]
+        division_code = first_five[1:3]
+        
+        if region_code == '3':
+            if division_code in ['31', '32']:
+                base_year = 1995
+            elif division_code in ['33', '34']:
+                base_year = 1998
+            elif division_code in ['35', '36']:
+                base_year = 2000
+            else:
+                base_year = 2002
+        else:
+            base_year = 2000
+        
+        last_digits = int(first_five[3:5])
+        year_offset = last_digits // 5
+        
+        estimated_year = base_year + year_offset
+        estimated_year = max(1990, min(2025, estimated_year))
+        
+        return {
+            'start_year': estimated_year - 5,
+            'end_year': estimated_year + 5,
+            'estimated_year': estimated_year,
+            'era': self._get_era_from_year(estimated_year)
+        }
+    
+    def _get_era_from_year(self, year: int) -> str:
+        """Convert year to era description"""
+        if year < 1995:
+            return "Early NADRA Era"
+        elif year < 2000:
+            return "Pre-2000 Era"
+        elif year < 2005:
+            return "Early Digital Era"
+        elif year < 2010:
+            return "Mid Digital Era"
+        elif year < 2015:
+            return "Smart CNIC Era"
+        else:
+            return "Recent Era"
+    
+    def _calculate_age_confidence(self, first_five: str) -> float:
+        """Calculate confidence level for age estimation"""
+        series_key = first_five[:4] + "0"
+        if series_key in self.issue_year_ranges:
+            return 0.85
+        
+        region_code = first_five[0]
+        if region_code in ['3', '4']:
+            return 0.70
+        else:
+            return 0.60
+    
+    def _predict_issue_date(self, cnic: str) -> Dict:
+        """Predict issue date based on CNIC patterns"""
+        first_five = cnic[:5]
+        issue_info = self._get_issue_year_info(first_five)
+        estimated_year = issue_info['estimated_year']
+        
+        last_digits = int(cnic[3:5])
+        estimated_month = (last_digits % 12) + 1
+        
+        if estimated_month in [12, 1]:
+            estimated_month = 3
+        
+        month_names = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ]
+        
+        issue_date = datetime(estimated_year, estimated_month, 15)
+        current_date = datetime.now()
+        days_since_issue = (current_date - issue_date).days
+        years_since_issue = days_since_issue / 365.25
+        
+        return {
+            'estimated_issue_year': estimated_year,
+            'estimated_issue_month': month_names[estimated_month - 1],
+            'estimated_issue_date': f"{month_names[estimated_month - 1]} {estimated_year}",
+            'days_since_issue': int(days_since_issue),
+            'years_since_issue': round(years_since_issue, 1),
+            'issue_era': issue_info['era'],
+            'confidence_level': f"{self._calculate_age_confidence(first_five) * 100:.1f}%"
+        }
+    
+    def _analyze_generation(self, cnic: str) -> Dict:
+        """Analyze which generation the CNIC belongs to"""
+        first_five = cnic[:5]
+        issue_info = self._get_issue_year_info(first_five)
+        issue_year = issue_info['estimated_year']
+        
+        if issue_year < 2000:
+            generation = "pre_2000"
+        elif issue_year < 2010:
+            generation = "2000_2010"
+        else:
+            generation = "post_2010"
+        
+        gen_info = self.generation_patterns[generation]
+        
+        digit_entropy = self._calculate_entropy(cnic)
+        if digit_entropy < 2.5:
+            tech_era = "Early Computerization"
+        elif digit_entropy < 3.0:
+            tech_era = "Digital Transition" 
+        else:
+            tech_era = "Modern Digital"
+        
+        return {
+            'generation': gen_info['description'],
+            'issue_period': f"{gen_info['years'][0]}-{gen_info['years'][1]}",
+            'characteristics': gen_info['characteristics'],
+            'technology_era': tech_era,
+            'estimated_issue_year': issue_year,
+            'digit_complexity': "Low" if digit_entropy < 2.5 else "Medium" if digit_entropy < 3.0 else "High"
+        }
+    
+    def _analyze_series(self, cnic: str) -> Dict:
+        """Analyze CNIC series for temporal patterns"""
+        first_five = cnic[:5]
+        region_code = cnic[0]
+        division_code = cnic[1:3]
+        
+        series_number = int(first_five)
+        
+        if series_number < 20000:
+            series_type = "Early Series"
+        elif series_number < 40000:
+            series_type = "Mid Series"
+        else:
+            series_type = "Recent Series"
+        
+        if region_code == '3':
+            if division_code in ['31', '32']:
+                region_development = "Early Developed"
+            elif division_code in ['35', '36']:
+                region_development = "Rapid Development"
+            else:
+                region_development = "Steady Development"
+        else:
+            region_development = "Standard Development"
+        
+        return {
+            'series_type': series_type,
+            'series_number': series_number,
+            'regional_development_phase': region_development,
+            'is_early_series': series_number < 25000,
+            'is_recent_series': series_number > 45000,
+            'progression_level': self._calculate_series_progression(series_number)
+        }
+    
+    def _calculate_series_progression(self, series_number: int) -> str:
+        """Calculate how far along the series progression"""
+        if series_number < 15000:
+            return "Very Early (1-15k)"
+        elif series_number < 30000:
+            return "Early Phase (15-30k)"
+        elif series_number < 45000:
+            return "Mid Phase (30-45k)"
+        else:
+            return "Recent Phase (45k+)"
+    
+    def _detect_temporal_patterns(self, cnic: str) -> Dict:
+        """Detect temporal patterns in CNIC"""
+        patterns = []
+        
+        first_five = cnic[:5]
+        if self._is_sequential_issuance(first_five):
+            patterns.append("Sequential issuance pattern")
+        
+        digit_entropy = self._calculate_entropy(cnic)
+        if digit_entropy < 2.3:
+            patterns.append("Low entropy - possible early issuance")
+        elif digit_entropy > 3.1:
+            patterns.append("High entropy - likely recent issuance")
+        
+        region_code = cnic[0]
+        if region_code in ['1', '2'] and int(cnic[1:3]) < 20:
+            patterns.append("Early KPK/FATA pattern")
+        
+        return {
+            'detected_patterns': patterns,
+            'temporal_consistency': self._check_temporal_consistency(cnic),
+            'issuance_likelihood': self._calculate_issuance_likelihood(cnic),
+            'historical_context': self._get_historical_context(cnic)
+        }
+    
+    def _is_sequential_issuance(self, first_five: str) -> bool:
+        """Check if CNIC shows sequential issuance pattern"""
+        digits = [int(d) for d in first_five]
+        
+        sequential_count = 0
+        for i in range(len(digits) - 1):
+            if abs(digits[i] - digits[i+1]) == 1:
+                sequential_count += 1
+        
+        return sequential_count >= 2
+    
+    def _check_temporal_consistency(self, cnic: str) -> str:
+        """Check if CNIC shows temporal consistency"""
+        first_five = cnic[:5]
+        series_number = int(first_five)
+        digit_entropy = self._calculate_entropy(cnic)
+        
+        if series_number < 20000 and digit_entropy > 2.8:
+            return "Inconsistent - Early series with high entropy"
+        elif series_number > 40000 and digit_entropy < 2.4:
+            return "Inconsistent - Recent series with low entropy"
+        else:
+            return "Consistent - Matches expected temporal patterns"
+    
+    def _calculate_issuance_likelihood(self, cnic: str) -> str:
+        """Calculate likelihood of issuance period"""
+        first_five = cnic[:5]
+        series_number = int(first_five)
+        
+        if series_number < 15000:
+            return "Very High - Classic early pattern"
+        elif series_number < 30000:
+            return "High - Established pattern"
+        elif series_number < 45000:
+            return "Medium - Transitional pattern"
+        else:
+            return "High - Modern pattern"
+    
+    def _get_historical_context(self, cnic: str) -> str:
+        """Get historical context for CNIC issuance"""
+        first_five = cnic[:5]
+        issue_info = self._get_issue_year_info(first_five)
+        issue_year = issue_info['estimated_year']
+        
+        historical_events = {
+            1990: "Early NADRA computerization begins",
+            1995: "Widespread CNIC digitization",
+            2000: "Massive CNIC drive for new millennium", 
+            2005: "Enhanced security features introduced",
+            2010: "Smart CNIC program launched",
+            2015: "Biometric verification expansion",
+            2020: "Digital NADRA initiatives"
+        }
+        
+        closest_year = min(historical_events.keys(), key=lambda x: abs(x - issue_year))
+        return f"Issued around {historical_events[closest_year]}"
     
     def _analyze_digits(self, cnic: str) -> Dict:
         """Analyze digit patterns and sequences"""
@@ -231,11 +554,9 @@ class CNICValidator:
         """Find sequential number patterns"""
         patterns = []
         for i in range(len(cnic) - 2):
-            # Check ascending sequence
             if (int(cnic[i]) + 1 == int(cnic[i+1]) and 
                 int(cnic[i+1]) + 1 == int(cnic[i+2])):
                 patterns.append(f"Ascending: {cnic[i:i+3]}")
-            # Check descending sequence
             if (int(cnic[i]) - 1 == int(cnic[i+1]) and 
                 int(cnic[i+1]) - 1 == int(cnic[i+2])):
                 patterns.append(f"Descending: {cnic[i:i+3]}")
@@ -252,14 +573,13 @@ class CNICValidator:
     
     def _is_sequential(self, cnic: str) -> bool:
         """Check if CNIC has sequential digits"""
-        # Check if first 5 digits are sequential
         first_five = cnic[:5]
         return (first_five in ['12345', '54321'] or 
                 all(int(first_five[i]) + 1 == int(first_five[i+1]) for i in range(4)))
     
     def _is_repeating_pattern(self, cnic: str) -> bool:
         """Check for repeating digit patterns"""
-        return len(set(cnic)) <= 5  # If 5 or fewer unique digits
+        return len(set(cnic)) <= 5
     
     def _is_palindrome(self, cnic: str) -> bool:
         """Check if CNIC is palindrome"""
@@ -289,15 +609,14 @@ class CNICValidator:
     
     def _is_test_number(self, cnic: str) -> bool:
         """Check if this might be a test number"""
-        # Test numbers often start with specific patterns
         test_patterns = ['00001', '99999', '12345']
         return any(cnic.startswith(pattern) for pattern in test_patterns)
     
     def _is_common_pattern(self, cnic: str) -> bool:
         """Check for common fake CNIC patterns"""
         common_fakes = [
-            cnic[0] * 13,  # All same digit
-            '1234512345123'  # Repeated pattern
+            cnic[0] * 13,
+            '1234512345123'
         ]
         return cnic in common_fakes
     
@@ -353,13 +672,11 @@ class CNICValidator:
     def _randomness_score(self, cnic: str) -> float:
         """Calculate randomness score (0-1)"""
         entropy = self._calculate_entropy(cnic)
-        max_entropy = 3.3219  # log2(10) for 10 possible digits
+        max_entropy = 3.3219
         return round(entropy / max_entropy, 4)
     
     def batch_analyze(self, cnics: List[str]) -> Dict:
-        """
-        Analyze multiple CNICs for patterns and statistics
-        """
+        """Analyze multiple CNICs for patterns and statistics"""
         valid_count = 0
         regional_distribution = {}
         gender_distribution = {'Male': 0, 'Female': 0}
@@ -378,7 +695,6 @@ class CNICValidator:
                 region = result['region']
                 gender = result['gender']
                 
-                # Update regional distribution
                 regional_distribution[region] = regional_distribution.get(region, 0) + 1
                 gender_distribution[gender] = gender_distribution.get(gender, 0) + 1
         
