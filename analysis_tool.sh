@@ -262,6 +262,7 @@ main_menu() {
     while true; do
         echo -e "\n${PURPLE}=== MAIN MENU ===${NC}"
         echo -e "${GREEN}1) CNIC Analysis${NC}"
+        echo -e "${GREEN}2) Advanced CNIC Analysis${NC}"
         echo -e "${GREEN}2) Phone Number Analysis${NC}"
         echo -e "${GREEN}3) Batch Analysis${NC}"
         echo -e "${GREEN}4) Generate Synthetic Test Data${NC}"
@@ -272,10 +273,11 @@ main_menu() {
         
         case $choice in
             1) cnic_analysis ;;
-            2) phone_analysis ;;
-            3) batch_analysis ;;
-            4) synthetic_data ;;
-            5) 
+            2) advanced_cnic_analysis ;;
+            3) phone_analysis ;;
+            4) batch_analysis ;;
+            5) synthetic_data ;;
+            6) 
                 echo -e "${CYAN}Thank you for using Pakistan Digital Validator!${NC}"
                 echo -e "${BLUE}Made with ❤️ by 516 Hackers${NC}"
                 exit 0 
