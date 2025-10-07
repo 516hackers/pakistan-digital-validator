@@ -109,6 +109,38 @@ if result['is_valid']:
     print(f'   • Entropy Score: {stats[\"entropy_score\"]}')
     print(f'   • Randomness: {stats[\"randomness_score\"]*100}%')
     
+    # Temporal Analysis
+    print('\\n⏰ TEMPORAL ANALYSIS:')
+    temporal = advanced['temporal_analysis']
+    
+    # Age Estimation
+    age_info = temporal['age_estimation']
+    print(f'   • Estimated Age: {age_info[\"estimated_age\"]} years ({age_info[\"age_group\"]})')
+    print(f'   • Age Range: {age_info[\"age_range\"]}')
+    print(f'   • Issue Era: {age_info[\"era\"]}')
+    print(f'   • Confidence: {age_info[\"confidence\"]*100:.1f}%')
+    
+    # Issue Date Prediction
+    issue_info = temporal['issue_date_prediction']
+    print(f'   • Estimated Issue: {issue_info[\"estimated_issue_date\"]}')
+    print(f'   • Years Since Issue: {issue_info[\"years_since_issue\"]}')
+    
+    # Generation Analysis
+    gen_info = temporal['generation_analysis']
+    print(f'   • Generation: {gen_info[\"generation\"]}')
+    print(f'   • Tech Era: {gen_info[\"technology_era\"]}')
+    
+    # Series Analysis
+    series_info = temporal['series_analysis']
+    print(f'   • Series Type: {series_info[\"series_type\"]}')
+    print(f'   • Progression: {series_info[\"progression_level\"]}')
+    
+    # Temporal Patterns
+    temp_patterns = temporal['temporal_patterns']
+    print(f'   • Temporal Consistency: {temp_patterns[\"temporal_consistency\"]}')
+    print(f'   • Issuance Likelihood: {temp_patterns[\"issuance_likelihood\"]}')
+    print(f'   • Historical Context: {temp_patterns[\"historical_context\"]}')
+    
 else:
     print('❌ Status: INVALID')
     print(f'📝 Input: {result[\"input\"]}')
