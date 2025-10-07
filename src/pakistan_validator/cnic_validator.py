@@ -192,7 +192,7 @@ class CNICValidator:
                 return f"{district_list[0]} (Area)"
         return f"District Code: {district_code}"
     
-        def validate_comprehensive(self, cnic: str) -> Dict:
+    def validate_comprehensive(self, cnic: str) -> Dict:
         """
         Comprehensive validation with detailed results
         """
