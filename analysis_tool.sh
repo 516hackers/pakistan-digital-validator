@@ -12,8 +12,8 @@ NC='\033[0m' # No Color
 # Banner
 echo -e "${CYAN}"
 echo "╔══════════════════════════════════════════════╗"
-echo "║           PAKISTAN DIGITAL VALIDATOR         ║"
-echo "║                516 Hackers                   ║"
+echo "║           PAKISTAN DIGITAL VALIDATOR        ║"
+echo "║                516 Hackers                  ║"
 echo "╚══════════════════════════════════════════════╝"
 echo -e "${NC}"
 
@@ -39,6 +39,7 @@ if result['is_valid']:
     print(f'🔢 Cleaned: {result[\"cleaned\"]}')
     print(f'📋 Formatted: {result[\"formatted\"]}')
     print(f'🏛️  Region: {result[\"region\"]}')
+    print(f'🏙️  District: {result[\"district\"]}')
     print(f'👤 Gender: {result[\"gender\"]}')
 else:
     print('❌ Status: INVALID')
@@ -261,13 +262,13 @@ print('⚠️  These are SYNTHETIC numbers for testing only!')
 main_menu() {
     while true; do
         echo -e "\n${PURPLE}=== MAIN MENU ===${NC}"
-        echo -e "${GREEN}1) CNIC Analysis${NC}"
+        echo -e "${GREEN}1) Basic CNIC Analysis${NC}"
         echo -e "${GREEN}2) Advanced CNIC Analysis${NC}"
-        echo -e "${GREEN}2) Phone Number Analysis${NC}"
-        echo -e "${GREEN}3) Batch Analysis${NC}"
-        echo -e "${GREEN}4) Generate Synthetic Test Data${NC}"
-        echo -e "${RED}5) Exit${NC}"
-        echo -e "${YELLOW}Select an option (1-5):${NC}"
+        echo -e "${GREEN}3) Phone Number Analysis${NC}"
+        echo -e "${GREEN}4) Batch Analysis${NC}"
+        echo -e "${GREEN}5) Generate Synthetic Test Data${NC}"
+        echo -e "${RED}6) Exit${NC}"
+        echo -e "${YELLOW}Select an option (1-6):${NC}"
         
         read -p "Choice: " choice
         
@@ -283,7 +284,7 @@ main_menu() {
                 exit 0 
                 ;;
             *) 
-                echo -e "${RED}Invalid option! Please select 1-5${NC}"
+                echo -e "${RED}Invalid option! Please select 1-6${NC}"
                 ;;
         esac
         
