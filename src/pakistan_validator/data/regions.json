@@ -1,22 +1,53 @@
 {
     "1": "Khyber Pakhtunkhwa",
-    "2": "FATA",
+    "2": "FATA", 
     "3": "Punjab",
     "4": "Sindh",
     "5": "Balochistan",
     "6": "Islamabad",
     "7": "Gilgit-Baltistan",
-    "advanced_info": {
-        "digit_ranges": {
-            "1": {"start": 10000, "end": 19999, "description": "KPK Series"},
-            "3": {"start": 30000, "end": 39999, "description": "Punjab Series"},
-            "4": {"start": 40000, "end": 49999, "description": "Sindh Series"},
-            "5": {"start": 50000, "end": 59999, "description": "Balochistan Series"}
+    "district_mapping": {
+        "1": {
+            "01": "Peshawar", "02": "Mardan", "03": "Charsadda", "04": "Swabi",
+            "05": "Nowshera", "06": "Kohat", "07": "Hangu", "08": "Karak",
+            "09": "Bannu", "10": "Lakki Marwat", "11": "Dera Ismail Khan", "12": "Tank",
+            "13": "Malakand", "14": "Swat", "15": "Upper Dir", "16": "Lower Dir",
+            "17": "Buner", "18": "Shangla", "19": "Kohistan", "20": "Mansehra",
+            "21": "Batagram", "22": "Abbottabad", "23": "Haripur", "24": "Tor Ghar"
         },
-        "validation_rules": {
-            "gender_digit": "Last digit - Odd: Male, Even: Female",
-            "format": "XXXXX-XXXXXXX-X (13 digits total)",
-            "district_encoding": "First 3 digits represent region + district"
+        "3": {
+            "01": "Lahore", "02": "Faisalabad", "03": "Rawalpindi", "04": "Gujranwala",
+            "05": "Multan", "06": "Sialkot", "07": "Bahawalpur", "08": "Sargodha",
+            "09": "Sheikhupura", "10": "Jhang", "11": "Dera Ghazi Khan", "12": "Sahiwal",
+            "13": "Gujrat", "14": "Rahim Yar Khan", "15": "Kasur", "16": "Okara",
+            "17": "Mianwali", "18": "Bhakkar", "19": "Khushab", "20": "Pakpattan",
+            "21": "Toba Tek Singh", "22": "Jhelum", "23": "Khanewal", "24": "Hafizabad",
+            "25": "Narowal", "26": "Lodhran", "27": "Vehari", "28": "Mandi Bahauddin",
+            "29": "Chiniot", "30": "Attock", "31": "Talagang", "32": "Murree",
+            "33": "Sadiqabad", "34": "Jampur", "35": "Rajanpur", "36": "Layyah"
+        },
+        "4": {
+            "01": "Karachi East", "02": "Karachi West", "03": "Karachi South", "04": "Karachi Central",
+            "05": "Hyderabad", "06": "Sukkur", "07": "Larkana", "08": "Nawabshah",
+            "09": "Mirpur Khas", "10": "Thatta", "11": "Badin", "12": "Sanghar",
+            "13": "Jacobabad", "14": "Shikarpur", "15": "Khairpur", "16": "Ghotki",
+            "17": "Dadu", "18": "Jamshoro", "19": "Naushahro Feroze", "20": "Kamber Shahdadkot",
+            "21": "Umerkot", "22": "Tando Allahyar", "23": "Tando Muhammad Khan", "24": "Matli",
+            "25": "Kashmore", "26": "Kandhkot", "27": "Shahdadpur", "28": "Matiari"
+        },
+        "5": {
+            "01": "Quetta", "02": "Turbat", "03": "Khuzdar", "04": "Chaman", 
+            "05": "Gwadar", "06": "Dera Murad Jamali", "07": "Dera Allah Yar", "08": "Usta Muhammad",
+            "09": "Sibi", "10": "Loralai", "11": "Zhob", "12": "Killa Saifullah",
+            "13": "Mastung", "14": "Kalat", "15": "Nushki", "16": "Washuk",
+            "17": "Kharan", "18": "Panjgur", "19": "Awaran", "20": "Barkhan"
+        },
+        "6": {
+            "01": "Islamabad"
+        },
+        "7": {
+            "01": "Gilgit", "02": "Skardu", "03": "Ghizer", "04": "Ghanche",
+            "05": "Hunza", "06": "Nagar", "07": "Astore", "08": "Diamer"
         }
     }
 }
