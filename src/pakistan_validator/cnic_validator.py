@@ -3,6 +3,7 @@ import os
 import re
 from typing import Dict, Optional, Tuple, List
 from datetime import datetime
+from math import log2
 
 class CNICValidator:
     """
@@ -19,25 +20,34 @@ class CNICValidator:
     def _load_region_codes(self) -> Dict[str, str]:
         """Load region codes from JSON file"""
         data_path = os.path.join(os.path.dirname(__file__), 'data', 'regions.json')
-        with open(data_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        try:
+            with open(data_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                # Extract only region codes, not district mapping
+                return {k: v for k, v in data.items() if k not in ['district_mapping', 'advanced_info']}
+        except:
+            return {
+                '1': 'Khyber Pakhtunkhwa', '2': 'FATA', '3': 'Punjab', 
+                '4': 'Sindh', '5': 'Balochistan', '6': 'Islamabad', 
+                '7': 'Gilgit-Baltistan'
+            }
     
     def _load_district_codes(self) -> Dict[str, Dict]:
         """Load advanced district codes"""
-        return {
-            '1': {'name': 'Khyber Pakhtunkhwa', 'districts': {
-                '01': 'Peshawar', '02': 'Mardan', '03': 'Charsadda', '04': 'Swabi',
-                '05': 'Nowshera', '06': 'Kohat', '07': 'Hangu', '08': 'Karak'
-            }},
-            '3': {'name': 'Punjab', 'districts': {
-                '01': 'Lahore', '02': 'Faisalabad', '03': 'Rawalpindi', '04': 'Gujranwala',
-                '05': 'Multan', '06': 'Sialkot', '07': 'Bahawalpur', '08': 'Sargodha'
-            }},
-            '4': {'name': 'Sindh', 'districts': {
-                '01': 'Karachi', '02': 'Hyderabad', '03': 'Sukkur', '04': 'Larkana',
-                '05': 'Nawabshah', '06': 'Mirpur Khas', '07': 'Thatta', '08': 'Badin'
-            }}
-        }
+        data_path = os.path.join(os.path.dirname(__file__), 'data', 'regions.json')
+        try:
+            with open(data_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                return data.get('district_mapping', {})
+        except:
+            return {
+                '1': {'01': 'Peshawar', '02': 'Mardan', '03': 'Charsadda', '04': 'Swabi'},
+                '3': {'01': 'Lahore', '02': 'Faisalabad', '03': 'Rawalpindi', '04': 'Gujranwala'},
+                '4': {'01': 'Karachi East', '02': 'Karachi West', '03': 'Karachi South', '04': 'Karachi Central'},
+                '5': {'01': 'Quetta', '02': 'Turbat', '03': 'Khuzdar', '04': 'Chaman'},
+                '6': {'01': 'Islamabad'},
+                '7': {'01': 'Gilgit', '02': 'Skardu', '03': 'Ghizer', '04': 'Ghanche'}
+            }
     
     def validate_format(self, cnic: str) -> bool:
         """
@@ -101,8 +111,12 @@ class CNICValidator:
     def _get_district_name(self, region_code: str, district_code: str) -> str:
         """Get district name from region and district codes"""
         if region_code in self.district_codes:
-            return self.district_codes[region_code]['districts'].get(district_code, "Unknown District")
-        return "Unknown District"
+            districts = self.district_codes[region_code]
+            if district_code in districts:
+                return districts[district_code]
+            else:
+                return f"District Code: {district_code}"
+        return "Unknown Region"
     
     def validate_comprehensive(self, cnic: str) -> Dict:
         """
@@ -297,7 +311,6 @@ class CNICValidator:
     
     def _calculate_entropy(self, cnic: str) -> float:
         """Calculate entropy of CNIC digits (measure of randomness)"""
-        from math import log2
         freq = {}
         for digit in cnic:
             freq[digit] = freq.get(digit, 0) + 1
