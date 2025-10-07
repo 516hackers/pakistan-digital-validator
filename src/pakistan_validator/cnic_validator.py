@@ -119,7 +119,7 @@ class CNICValidator:
         region_code = cleaned[0]
         division_code = cleaned[1:3]  # First 2 digits after region code
         district_code = cleaned[3:5]  # Next 2 digits for district
-        full_district_code = cleaned[1:5]  # Full 4-digit code for exact mapping
+        full_5_digit_code = cleaned[:5]  # Full 5-digit code for exact mapping (like "31304")
         gender_digit = int(cleaned[12])
         
         return {
@@ -130,7 +130,7 @@ class CNICValidator:
             'division_code': division_code,
             'division': self._get_division_name(division_code),
             'district_code': district_code,
-            'district': self._get_exact_district_name(full_district_code),
+            'district': self._get_exact_district_name(full_5_digit_code),
             'gender': "Male" if gender_digit % 2 == 1 else "Female",
             'gender_digit': gender_digit,
             'unique_number': cleaned[5:12]  # Remaining unique digits
@@ -140,9 +140,9 @@ class CNICValidator:
         """Get division name from division code"""
         return self.division_codes.get(division_code, f"Division Code: {division_code}")
     
-    def _get_exact_district_name(self, full_district_code: str) -> str:
-        """Get exact district name using full 4-digit code"""
-        return self.exact_district_mapping.get(full_district_code, f"District Code: {full_district_code}")
+    def _get_exact_district_name(self, full_5_digit_code: str) -> str:
+        """Get exact district name using full 5-digit code"""
+        return self.exact_district_mapping.get(full_5_digit_code, f"District Code: {full_5_digit_code[3:5]}")
     
     def validate_comprehensive(self, cnic: str) -> Dict:
         """
