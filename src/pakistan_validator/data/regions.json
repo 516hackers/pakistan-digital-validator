@@ -1,6 +1,6 @@
 {
     "1": "Khyber Pakhtunkhwa",
-    "2": "FATA", 
+    "2": "FATA",
     "3": "Punjab",
     "4": "Sindh",
     "5": "Balochistan",
@@ -24,7 +24,10 @@
             "21": "Toba Tek Singh", "22": "Jhelum", "23": "Khanewal", "24": "Hafizabad",
             "25": "Narowal", "26": "Lodhran", "27": "Vehari", "28": "Mandi Bahauddin",
             "29": "Chiniot", "30": "Attock", "31": "Talagang", "32": "Murree",
-            "33": "Sadiqabad", "34": "Jampur", "35": "Rajanpur", "36": "Layyah"
+            "33": "Sadiqabad", "34": "Jampur", "35": "Rajanpur", "36": "Layyah",
+            "50": "Gujranwala Division", "51": "Lahore Division", "52": "Rawalpindi Division",
+            "53": "Sargodha Division", "54": "Multan Division", "55": "Bahawalpur Division",
+            "56": "Dera Ghazi Khan Division", "57": "Sahiwal Division", "58": "Faisalabad Division"
         },
         "4": {
             "01": "Karachi East", "02": "Karachi West", "03": "Karachi South", "04": "Karachi Central",
@@ -48,6 +51,19 @@
         "7": {
             "01": "Gilgit", "02": "Skardu", "03": "Ghizer", "04": "Ghanche",
             "05": "Hunza", "06": "Nagar", "07": "Astore", "08": "Diamer"
+        }
+    },
+    "advanced_info": {
+        "digit_ranges": {
+            "1": {"start": 10000, "end": 19999, "description": "KPK Series"},
+            "3": {"start": 30000, "end": 39999, "description": "Punjab Series"},
+            "4": {"start": 40000, "end": 49999, "description": "Sindh Series"},
+            "5": {"start": 50000, "end": 59999, "description": "Balochistan Series"}
+        },
+        "validation_rules": {
+            "gender_digit": "Last digit - Odd: Male, Even: Female",
+            "format": "XXXXX-XXXXXXX-X (13 digits total)",
+            "district_encoding": "First 3 digits represent region + district"
         }
     }
 }
