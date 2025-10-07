@@ -49,6 +49,74 @@ else:
 "
 }
 
+# Function for Advanced CNIC analysis
+advanced_cnic_analysis() {
+    echo -e "\n${CYAN}=== ADVANCED CNIC ANALYSIS ===${NC}"
+    echo -e "${YELLOW}Enter CNIC number for advanced analysis:${NC}"
+    read -p "CNIC: " cnic_input
+    
+    python3 -c "
+from pakistan_validator import CNICValidator
+v = CNICValidator()
+result = v.validate_comprehensive('$cnic_input')
+
+print('')
+print('┌' + '─' * 50 + '┐')
+print('│' + 'ADVANCED CNIC ANALYSIS RESULTS'.center(50) + '│')
+print('└' + '─' * 50 + '┘')
+
+if result['is_valid']:
+    print('✅ Status: VALID')
+    print(f'📝 Input: {result[\"input\"]}')
+    print(f'🔢 Cleaned: {result[\"cleaned\"]}')
+    print(f'📋 Formatted: {result[\"formatted\"]}')
+    print(f'🏛️  Region: {result[\"region\"]}')
+    print(f'🏙️  District: {result[\"district\"]}')
+    print(f'👤 Gender: {result[\"gender\"]}')
+    
+    print('\\n🔍 ADVANCED ANALYSIS:')
+    advanced = result['advanced_analysis']
+    
+    # Digit Analysis
+    print('\\n📊 DIGIT ANALYSIS:')
+    digits = advanced['digit_analysis']
+    print(f'   • Digit Sum: {digits[\"digit_sum\"]}')
+    print(f'   • Even Digits: {digits[\"even_digits\"]}')
+    print(f'   • Odd Digits: {digits[\"odd_digits\"]}')
+    print(f'   • Repeated Patterns: {len(digits[\"repeated_digits\"])}')
+    print(f'   • Sequential Patterns: {len(digits[\"sequential_patterns\"])}')
+    
+    # Pattern Analysis
+    print('\\n🔎 PATTERN ANALYSIS:')
+    patterns = advanced['pattern_analysis']
+    print(f'   • Sequential: {patterns[\"is_sequential\"]}')
+    print(f'   • Repeating: {patterns[\"is_repeating\"]}')
+    print(f'   • Palindrome: {patterns[\"palindrome_check\"]}')
+    print(f'   • Prime Digits: {patterns[\"prime_digits\"]}')
+    
+    # Security Analysis
+    print('\\n🛡️ SECURITY ANALYSIS:')
+    security = advanced['security_analysis']
+    print(f'   • Suspicious: {security[\"suspicious_pattern\"]}')
+    print(f'   • Test Number: {security[\"test_number\"]}')
+    if security['fake_indicator']:
+        print(f'   • Fake Indicators: {\", \".join(security[\"fake_indicator\"])}')
+    
+    # Statistical Analysis
+    print('\\n📈 STATISTICAL ANALYSIS:')
+    stats = advanced['statistical_analysis']
+    print(f'   • Entropy Score: {stats[\"entropy_score\"]}')
+    print(f'   • Randomness: {stats[\"randomness_score\"]*100}%')
+    
+else:
+    print('❌ Status: INVALID')
+    print(f'📝 Input: {result[\"input\"]}')
+    print('💡 Errors:')
+    for error in result['errors']:
+        print(f'   • {error}')
+"
+}
+
 # Function for Phone Number analysis
 phone_analysis() {
     echo -e "\n${CYAN}=== PHONE NUMBER ANALYSIS TOOL ===${NC}"
